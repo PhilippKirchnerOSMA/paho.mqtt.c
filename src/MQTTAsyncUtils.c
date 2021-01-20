@@ -2818,9 +2818,12 @@ static int MQTTAsync_connecting(MQTTAsyncs* m)
 			goto exit;
 		else if (rc != TCPSOCKET_INTERRUPTED)
 		{
-			m->c->connect_state = WAIT_FOR_CONNACK; /* Websocket upgrade completed, in which case send the MQTT connect packet */
-			if ((rc = MQTTPacket_send_connect(m->c, m->connect.details.conn.MQTTVersion, m->connectProps, m->willProps)) == SOCKET_ERROR)
-				goto exit;
+			/* check to make sure websocket has been upgraded successfully before changing state */
+			if (m->c->net.websocket == 1) {
+				m->c->connect_state = WAIT_FOR_CONNACK; /* Websocket upgrade completed, in which case send the MQTT connect packet */
+				if ((rc = MQTTPacket_send_connect(m->c, m->connect.details.conn.MQTTVersion, m->connectProps, m->willProps)) == SOCKET_ERROR)
+					goto exit;
+			}
 		}
 	}
 
