@@ -11,6 +11,6 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          git checkout --config merge -b coverity-develop origin/develop
+          git checkout --conflict merge -b coverity-develop origin/develop
           git pull origin coverity-develop	
           git push origin coverity-develop
